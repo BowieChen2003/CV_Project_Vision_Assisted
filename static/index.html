@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vision Assistant</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #0f1115;
+      --panel: #171a21;
+      --text: #f3f4f6;
+      --muted: #9ca3af;
+      --primary: #2563eb;
+      --ok: #16a34a;
+      --warn: #d97706;
+      --err: #dc2626;
+    }
+    * {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      gap: 16px;
+    }
+    .panel {
+      background: var(--panel);
+      border-radius: 12px;
+      padding: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    input, button, select {
+      height: 36px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: #111827;
+      color: var(--text);
+      padding: 0 10px;
+      font-size: 14px;
+    }
+    button {
+      cursor: pointer;
+      background: var(--primary);
+      border: 0;
+      font-weight: 600;
+    }
+    button.secondary {
+      background: #374151;
+    }
+    .status {
+      margin-left: auto;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .video-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .frame-box {
+      background: #0b0d12;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .frame-title {
+      font-size: 13px;
+      color: var(--muted);
+      padding: 8px 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    video, img {
+      width: 100%;
+      height: auto;
+      display: block;
+      background: #000;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+    }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .metric {
+      background: #0b0d12;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 10px;
+    }
+    .metric .label {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .metric .value {
+      margin-top: 6px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .ok { color: var(--ok); }
+    .warn { color: var(--warn); }
+    .err { color: var(--err); }
+    @media (max-width: 920px) {
+      .video-grid {
+        grid-template-columns: 1fr;
+      }
+      .metrics {
+        grid-template-columns: 1fr 1fr;
+      }
+      .status {
+        width: 100%;
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="panel toolbar">
+      <button id="startBtn">开始</button>
+      <button id="stopBtn" class="secondary">停止</button>
+      <input id="targetInput" value="cup" placeholder="目标类别，例如 cup" />
+      <button id="setTargetBtn" class="secondary">更新目标</button>
+      <button id="ttsBtn" class="secondary">语音播报：开</button>
+      <span id="status" class="status">状态：未连接</span>
+    </div>
+
+    <div class="video-grid">
+      <div class="frame-box">
+        <div class="frame-title">本地摄像头</div>
+        <video id="localVideo" autoplay playsinline muted></video>
+      </div>
+      <div class="frame-box">
+        <div class="frame-title">后端处理结果</div>
+        <img id="resultImage" alt="result" />
+      </div>
+    </div>
+
+    <div class="panel metrics">
+      <div class="metric">
+        <div class="label">连接状态</div>
+        <div id="wsState" class="value err">DISCONNECTED</div>
+      </div>
+      <div class="metric">
+        <div class="label">摄像头状态</div>
+        <div id="cameraState" class="value err">OFF</div>
+      </div>
+      <div class="metric">
+        <div class="label">引导方向</div>
+        <div id="guidance" class="value">-</div>
+      </div>
+      <div class="metric">
+        <div class="label">像素距离</div>
+        <div id="distance" class="value">-</div>
+      </div>
+      <div class="metric">
+        <div class="label">目标类别</div>
+        <div id="targetName" class="value">cup</div>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="captureCanvas" width="640" height="360" style="display:none"></canvas>
+
+  <script>
+    const localVideo = document.getElementById("localVideo");
+    const resultImage = document.getElementById("resultImage");
+    const startBtn = document.getElementById("startBtn");
+    const stopBtn = document.getElementById("stopBtn");
+    const setTargetBtn = document.getElementById("setTargetBtn");
+    const targetInput = document.getElementById("targetInput");
+    const statusEl = document.getElementById("status");
+    const wsStateEl = document.getElementById("wsState");
+    const cameraStateEl = document.getElementById("cameraState");
+    const guidanceEl = document.getElementById("guidance");
+    const distanceEl = document.getElementById("distance");
+    const targetNameEl = document.getElementById("targetName");
+    const canvas = document.getElementById("captureCanvas");
+    const ttsBtn = document.getElementById("ttsBtn");
+    const ctx = canvas.getContext("2d");
+
+    let ws = null;
+    let stream = null;
+    let timer = null;
+    let sending = false;
+    let ttsEnabled = true;
+    let lastSpoken = "";
+    let lastSpeakTs = 0;
+    let cameraReady = false;
+    let lastCameraError = "";
+
+    function setStatus(text) {
+      statusEl.textContent = `状态：${text}`;
+    }
+
+    function setWsState(state, cls) {
+      wsStateEl.textContent = state;
+      wsStateEl.className = `value ${cls}`;
+    }
+
+    function setCameraState(state, cls) {
+      cameraStateEl.textContent = state;
+      cameraStateEl.className = `value ${cls}`;
+    }
+
+    function wsUrl() {
+      const protocol = location.protocol === "https:" ? "wss" : "ws";
+      return `${protocol}://${location.host}/ws/vision`;
+    }
+
+    function formatCameraError(err) {
+      if (!err) {
+        return "未知错误";
+      }
+      if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
+        return "系统拒绝摄像头权限，请在浏览器和 macOS 隐私设置中允许摄像头访问";
+      }
+      if (err.name === "NotFoundError" || err.name === "DevicesNotFoundError") {
+        return "未检测到可用摄像头设备";
+      }
+      if (err.name === "NotReadableError" || err.name === "TrackStartError") {
+        return "摄像头正被其他应用占用，请关闭后重试";
+      }
+      if (err.name === "OverconstrainedError") {
+        return "摄像头参数不兼容，已尝试降级后仍失败";
+      }
+      return `${err.name || "Error"}: ${err.message || "未知错误"}`;
+    }
+
+    async function getCameraStream() {
+      const preferredConstraints = {
+        video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false
+      };
+      const fallbackConstraints = {
+        video: true,
+        audio: false
+      };
+      try {
+        return await navigator.mediaDevices.getUserMedia(preferredConstraints);
+      } catch (err) {
+        return await navigator.mediaDevices.getUserMedia(fallbackConstraints);
+      }
+    }
+
+    async function startCamera() {
+      if (stream) {
+        cameraReady = true;
+        setCameraState("ON", "ok");
+        return;
+      }
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error("当前浏览器不支持 getUserMedia");
+      }
+      stream = await getCameraStream();
+      localVideo.srcObject = stream;
+      await localVideo.play();
+      cameraReady = true;
+      lastCameraError = "";
+      setCameraState("ON", "ok");
+      setStatus("摄像头已开启");
+    }
+
+    function stopCamera() {
+      if (!stream) {
+        return;
+      }
+      stream.getTracks().forEach((t) => t.stop());
+      stream = null;
+      localVideo.srcObject = null;
+      cameraReady = false;
+      setCameraState("OFF", "err");
+      setStatus("摄像头已关闭");
+    }
+
+    function connectWs() {
+      if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
+        return;
+      }
+      ws = new WebSocket(wsUrl());
+      setWsState("CONNECTING", "warn");
+      setStatus("连接后端中");
+
+      ws.onopen = () => {
+        setWsState("CONNECTED", "ok");
+        setStatus("已连接后端");
+        sendSetTarget();
+      };
+
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.type === "result") {
+          resultImage.src = data.image;
+          guidanceEl.textContent = data.guidance || "-";
+          distanceEl.textContent = data.distance_px ?? "-";
+          targetNameEl.textContent = data.target_class_name || targetInput.value.trim();
+          maybeSpeak(data.guidance);
+        } else if (data.type === "ack") {
+          targetNameEl.textContent = data.target_class_name || targetInput.value.trim();
+          if (!lastCameraError) {
+            setStatus(`目标已更新为 ${targetNameEl.textContent}`);
+          }
+        } else if (data.type === "error") {
+          setStatus(`后端错误：${data.message}`);
+        }
+      };
+
+      ws.onclose = () => {
+        setWsState("DISCONNECTED", "err");
+        setStatus("后端连接已断开");
+      };
+
+      ws.onerror = () => {
+        setStatus("WebSocket 连接失败");
+      };
+    }
+
+    function disconnectWs() {
+      if (!ws) {
+        return;
+      }
+      ws.close();
+      ws = null;
+    }
+
+    function sendSetTarget() {
+      const target = targetInput.value.trim();
+      if (!target || !ws || ws.readyState !== WebSocket.OPEN) {
+        return;
+      }
+      ws.send(JSON.stringify({ type: "set_target", target_class_name: target }));
+    }
+
+    function captureFrameBase64() {
+      if (!cameraReady || !stream || !localVideo.videoWidth || !localVideo.videoHeight) {
+        return null;
+      }
+      canvas.width = 640;
+      canvas.height = 360;
+      ctx.drawImage(localVideo, 0, 0, canvas.width, canvas.height);
+      return canvas.toDataURL("image/jpeg", 0.75);
+    }
+
+    function maybeSpeak(text) {
+      if (!ttsEnabled || !text) {
+        return;
+      }
+      const now = Date.now();
+      if (text === lastSpoken && now - lastSpeakTs < 1500) {
+        return;
+      }
+      lastSpoken = text;
+      lastSpeakTs = now;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      utterance.rate = 1;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    async function startPipeline() {
+      try {
+        await startCamera();
+        connectWs();
+        if (timer) {
+          clearInterval(timer);
+        }
+        timer = setInterval(() => {
+          if (!ws || ws.readyState !== WebSocket.OPEN || sending) {
+            return;
+          }
+          const image = captureFrameBase64();
+          if (!image) {
+            return;
+          }
+          sending = true;
+          ws.send(JSON.stringify({ type: "frame", image }));
+          setTimeout(() => {
+            sending = false;
+          }, 80);
+        }, 120);
+      } catch (err) {
+        cameraReady = false;
+        lastCameraError = formatCameraError(err);
+        setCameraState("ERROR", "err");
+        setStatus(`启动失败：${lastCameraError}`);
+        disconnectWs();
+      }
+    }
+
+    function stopPipeline() {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+      sending = false;
+      disconnectWs();
+      stopCamera();
+      lastCameraError = "";
+      window.speechSynthesis.cancel();
+      setWsState("DISCONNECTED", "err");
+      setCameraState("OFF", "err");
+      guidanceEl.textContent = "-";
+      distanceEl.textContent = "-";
+    }
+
+    startBtn.addEventListener("click", startPipeline);
+    stopBtn.addEventListener("click", stopPipeline);
+    setTargetBtn.addEventListener("click", sendSetTarget);
+    ttsBtn.addEventListener("click", () => {
+      ttsEnabled = !ttsEnabled;
+      ttsBtn.textContent = `语音播报：${ttsEnabled ? "开" : "关"}`;
+      if (!ttsEnabled) {
+        window.speechSynthesis.cancel();
+      }
+    });
+  </script>
+</body>
+</html>
