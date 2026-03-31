@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,14 +7,14 @@
   <style>
     :root {
       color-scheme: light dark;
-      --bg: #0f1115;
-      --panel: #171a21;
-      --text: #f3f4f6;
-      --muted: #9ca3af;
-      --primary: #2563eb;
-      --ok: #16a34a;
-      --warn: #d97706;
-      --err: #dc2626;
+      --bg: #060b14;
+      --panel: #0e1626;
+      --text: #e5f0ff;
+      --muted: #8da2c5;
+      --primary: #1d9bf0;
+      --ok: #22c55e;
+      --warn: #f59e0b;
+      --err: #ef4444;
     }
     * {
       box-sizing: border-box;
@@ -22,22 +22,100 @@
     }
     body {
       margin: 0;
-      background: var(--bg);
+      background:
+        radial-gradient(1200px 700px at 8% -15%, rgba(29, 155, 240, 0.3), transparent 58%),
+        radial-gradient(1000px 600px at 100% 0%, rgba(56, 189, 248, 0.16), transparent 52%),
+        linear-gradient(160deg, rgba(20, 184, 166, 0.08), transparent 38%),
+        var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding: 20px;
+      padding: 22px;
+      position: relative;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(transparent 97%, rgba(148, 163, 184, 0.05) 100%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      opacity: 0.22;
     }
     .wrap {
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 0 auto;
       display: grid;
       gap: 16px;
+    }
+    .hero {
+      background: linear-gradient(135deg, rgba(29, 155, 240, 0.18), rgba(11, 22, 43, 0.88));
+      border: 1px solid rgba(125, 211, 252, 0.36);
+      border-radius: 16px;
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.12), 0 16px 34px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(8px);
+    }
+    .hero-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .hero-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .hero-dot {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: conic-gradient(from 90deg, #22d3ee, #1d9bf0, #2563eb, #22d3ee);
+      box-shadow: 0 0 0 6px rgba(29, 155, 240, 0.16), 0 0 18px rgba(56, 189, 248, 0.45);
+      flex-shrink: 0;
+    }
+    .hero-title {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.1;
+      letter-spacing: 0.2px;
+      text-shadow: 0 0 16px rgba(56, 189, 248, 0.35);
+    }
+    .hero-subtitle {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .hero-biz {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .biz-item {
+      background: rgba(8, 16, 30, 0.72);
+      border: 1px solid rgba(125, 211, 252, 0.24);
+      border-radius: 10px;
+      padding: 10px;
+    }
+    .biz-item .k {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .biz-item .v {
+      font-size: 14px;
+      font-weight: 700;
     }
     .panel {
       background: var(--panel);
       border-radius: 12px;
       padding: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(125, 211, 252, 0.2);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.08), 0 14px 28px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(8px);
     }
     .toolbar {
       display: flex;
@@ -45,45 +123,66 @@
       gap: 8px;
       align-items: center;
     }
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+      gap: 14px;
+      align-items: start;
+    }
     input, button, select {
       height: 36px;
       border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      background: #111827;
+      border: 1px solid rgba(125, 211, 252, 0.22);
+      background: #091426;
       color: var(--text);
       padding: 0 10px;
       font-size: 14px;
     }
     button {
       cursor: pointer;
-      background: var(--primary);
+      background: linear-gradient(135deg, #1d9bf0, #2563eb);
       border: 0;
       font-weight: 600;
+      box-shadow: 0 6px 14px rgba(29, 155, 240, 0.32);
     }
     button.secondary {
-      background: #374151;
+      background: #1a2740;
+      box-shadow: none;
     }
     .status {
-      margin-left: auto;
+      width: 100%;
       font-size: 13px;
       color: var(--muted);
-    }
-    .video-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
     }
     .frame-box {
-      background: #0b0d12;
+      background: #070d19;
       border-radius: 10px;
       overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(125, 211, 252, 0.22);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.08), 0 12px 24px rgba(0, 0, 0, 0.36);
     }
-    .frame-title {
-      font-size: 13px;
-      color: var(--muted);
-      padding: 8px 10px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    .video-panel img {
+      max-height: 460px;
+      object-fit: cover;
+    }
+    .side-panel {
+      display: grid;
+      gap: 12px;
+    }
+    .side-panel .toolbar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .side-panel .toolbar input {
+      grid-column: 1 / -1;
+    }
+    .side-panel .toolbar .status {
+      grid-column: 1 / -1;
+    }
+    .side-panel .toolbar button,
+    .side-panel .toolbar input {
+      width: 100%;
     }
     video, img {
       width: 100%;
@@ -95,12 +194,12 @@
     }
     .metrics {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
     }
     .metric {
-      background: #0b0d12;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: #081222;
+      border: 1px solid rgba(125, 211, 252, 0.14);
       border-radius: 10px;
       padding: 10px;
     }
@@ -117,65 +216,113 @@
     .warn { color: var(--warn); }
     .err { color: var(--err); }
     @media (max-width: 920px) {
-      .video-grid {
+      body {
+        padding: 14px;
+      }
+      .hero-biz {
         grid-template-columns: 1fr;
+      }
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+      .video-panel img {
+        max-height: none;
       }
       .metrics {
         grid-template-columns: 1fr 1fr;
       }
       .status {
         width: 100%;
-        margin-left: 0;
       }
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="panel toolbar">
-      <button id="startBtn">开始</button>
-      <button id="stopBtn" class="secondary">停止</button>
-      <input id="targetInput" value="cup" placeholder="目标类别，例如 cup" />
-      <button id="setTargetBtn" class="secondary">更新目标</button>
-      <button id="ttsBtn" class="secondary">语音播报：开</button>
-      <span id="status" class="status">状态：未连接</span>
+    <div class="hero">
+      <div class="hero-top">
+        <div class="hero-title-wrap">
+          <div class="hero-dot"></div>
+          <div>
+            <h1 class="hero-title">Vision Assistant Dashboard</h1>
+            <p class="hero-subtitle">Real-time object guidance for assistive grasping</p>
+          </div>
+        </div>
+        <p class="hero-subtitle">Assistive visual guidance designed for safer and more independent daily object grasping.</p>
+      </div>
+      <div class="hero-biz">
+        <div class="biz-item">
+          <div class="k">Primary Users</div>
+          <div class="v">People with visual impairment</div>
+        </div>
+        <div class="biz-item">
+          <div class="k">Typical Scenarios</div>
+          <div class="v">Desk, kitchen, classroom, shared spaces</div>
+        </div>
+        <div class="biz-item">
+          <div class="k">Guidance Style</div>
+          <div class="v">Simple direction cues and distance feedback</div>
+        </div>
+        <div class="biz-item">
+          <div class="k">Expected Outcome</div>
+          <div class="v">Faster, safer and more confident grasping</div>
+        </div>
+      </div>
     </div>
 
-    <div class="video-grid">
-      <div class="frame-box">
-        <div class="frame-title">本地摄像头</div>
-        <video id="localVideo" autoplay playsinline muted></video>
-      </div>
-      <div class="frame-box">
-        <div class="frame-title">后端处理结果</div>
+    <div class="workspace">
+      <div class="frame-box video-panel">
         <img id="resultImage" alt="result" />
       </div>
-    </div>
 
-    <div class="panel metrics">
-      <div class="metric">
-        <div class="label">连接状态</div>
-        <div id="wsState" class="value err">DISCONNECTED</div>
-      </div>
-      <div class="metric">
-        <div class="label">摄像头状态</div>
-        <div id="cameraState" class="value err">OFF</div>
-      </div>
-      <div class="metric">
-        <div class="label">引导方向</div>
-        <div id="guidance" class="value">-</div>
-      </div>
-      <div class="metric">
-        <div class="label">像素距离</div>
-        <div id="distance" class="value">-</div>
-      </div>
-      <div class="metric">
-        <div class="label">目标类别</div>
-        <div id="targetName" class="value">cup</div>
+      <div class="panel side-panel">
+        <div class="toolbar">
+          <button id="startBtn">Start</button>
+          <button id="stopBtn" class="secondary">Stop</button>
+          <select id="targetInput">
+            <option value="cup" selected>cup</option>
+            <option value="bottle">bottle</option>
+            <option value="bowl">bowl</option>
+            <option value="banana">banana</option>
+            <option value="apple">apple</option>
+            <option value="orange">orange</option>
+            <option value="cell phone">cell phone</option>
+            <option value="book">book</option>
+            <option value="remote">remote</option>
+            <option value="scissors">scissors</option>
+          </select>
+          <button id="setTargetBtn" class="secondary">Update Target</button>
+          <button id="ttsBtn" class="secondary">Voice: ON</button>
+          <span id="status" class="status">Status: Not connected</span>
+        </div>
+
+        <div class="metrics">
+          <div class="metric">
+            <div class="label">Connection</div>
+            <div id="wsState" class="value err">DISCONNECTED</div>
+          </div>
+          <div class="metric">
+            <div class="label">Camera</div>
+            <div id="cameraState" class="value err">OFF</div>
+          </div>
+          <div class="metric">
+            <div class="label">Guidance</div>
+            <div id="guidance" class="value">-</div>
+          </div>
+          <div class="metric">
+            <div class="label">Distance (px)</div>
+            <div id="distance" class="value">-</div>
+          </div>
+          <div class="metric">
+            <div class="label">Target Class</div>
+            <div id="targetName" class="value">cup</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
+  <video id="localVideo" autoplay playsinline muted style="display:none"></video>
   <canvas id="captureCanvas" width="640" height="360" style="display:none"></canvas>
 
   <script>
@@ -206,7 +353,7 @@
     let lastCameraError = "";
 
     function setStatus(text) {
-      statusEl.textContent = `状态：${text}`;
+      statusEl.textContent = `Status: ${text}`;
     }
 
     function setWsState(state, cls) {
@@ -226,21 +373,21 @@
 
     function formatCameraError(err) {
       if (!err) {
-        return "未知错误";
+        return "Unknown error";
       }
       if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
-        return "系统拒绝摄像头权限，请在浏览器和 macOS 隐私设置中允许摄像头访问";
+        return "Camera permission denied. Please allow camera access in browser and macOS privacy settings.";
       }
       if (err.name === "NotFoundError" || err.name === "DevicesNotFoundError") {
-        return "未检测到可用摄像头设备";
+        return "No available camera device detected.";
       }
       if (err.name === "NotReadableError" || err.name === "TrackStartError") {
-        return "摄像头正被其他应用占用，请关闭后重试";
+        return "Camera is being used by another application. Please close it and try again.";
       }
       if (err.name === "OverconstrainedError") {
-        return "摄像头参数不兼容，已尝试降级后仍失败";
+        return "Camera constraints are not supported. Fallback attempt failed.";
       }
-      return `${err.name || "Error"}: ${err.message || "未知错误"}`;
+      return `${err.name || "Error"}: ${err.message || "Unknown error"}`;
     }
 
     async function getCameraStream() {
@@ -266,7 +413,7 @@
         return;
       }
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        throw new Error("当前浏览器不支持 getUserMedia");
+        throw new Error("Current browser does not support getUserMedia");
       }
       stream = await getCameraStream();
       localVideo.srcObject = stream;
@@ -274,7 +421,7 @@
       cameraReady = true;
       lastCameraError = "";
       setCameraState("ON", "ok");
-      setStatus("摄像头已开启");
+      setStatus("Camera started");
     }
 
     function stopCamera() {
@@ -286,7 +433,7 @@
       localVideo.srcObject = null;
       cameraReady = false;
       setCameraState("OFF", "err");
-      setStatus("摄像头已关闭");
+      setStatus("Camera stopped");
     }
 
     function connectWs() {
@@ -295,11 +442,11 @@
       }
       ws = new WebSocket(wsUrl());
       setWsState("CONNECTING", "warn");
-      setStatus("连接后端中");
+      setStatus("Connecting to backend");
 
       ws.onopen = () => {
         setWsState("CONNECTED", "ok");
-        setStatus("已连接后端");
+        setStatus("Connected to backend");
         sendSetTarget();
       };
 
@@ -314,20 +461,20 @@
         } else if (data.type === "ack") {
           targetNameEl.textContent = data.target_class_name || targetInput.value.trim();
           if (!lastCameraError) {
-            setStatus(`目标已更新为 ${targetNameEl.textContent}`);
+            setStatus(`Target updated to ${targetNameEl.textContent}`);
           }
         } else if (data.type === "error") {
-          setStatus(`后端错误：${data.message}`);
+          setStatus(`Backend error: ${data.message}`);
         }
       };
 
       ws.onclose = () => {
         setWsState("DISCONNECTED", "err");
-        setStatus("后端连接已断开");
+        setStatus("Backend connection closed");
       };
 
       ws.onerror = () => {
-        setStatus("WebSocket 连接失败");
+        setStatus("WebSocket connection failed");
       };
     }
 
@@ -399,7 +546,7 @@
         cameraReady = false;
         lastCameraError = formatCameraError(err);
         setCameraState("ERROR", "err");
-        setStatus(`启动失败：${lastCameraError}`);
+        setStatus(`Start failed: ${lastCameraError}`);
         disconnectWs();
       }
     }
@@ -425,7 +572,7 @@
     setTargetBtn.addEventListener("click", sendSetTarget);
     ttsBtn.addEventListener("click", () => {
       ttsEnabled = !ttsEnabled;
-      ttsBtn.textContent = `语音播报：${ttsEnabled ? "开" : "关"}`;
+      ttsBtn.textContent = `Voice: ${ttsEnabled ? "ON" : "OFF"}`;
       if (!ttsEnabled) {
         window.speechSynthesis.cancel();
       }
