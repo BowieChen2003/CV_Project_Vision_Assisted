@@ -279,18 +279,19 @@
         <div class="toolbar">
           <button id="startBtn">Start</button>
           <button id="stopBtn" class="secondary">Stop</button>
-          <select id="targetInput">
-            <option value="cup" selected>cup</option>
-            <option value="bottle">bottle</option>
-            <option value="bowl">bowl</option>
-            <option value="banana">banana</option>
-            <option value="apple">apple</option>
-            <option value="orange">orange</option>
-            <option value="cell phone">cell phone</option>
-            <option value="book">book</option>
-            <option value="remote">remote</option>
-            <option value="scissors">scissors</option>
-          </select>
+          <input id="targetInput" list="targetOptions" value="cup" placeholder="Select or type a target" />
+          <datalist id="targetOptions">
+            <option value="cup"></option>
+            <option value="bottle"></option>
+            <option value="bowl"></option>
+            <option value="banana"></option>
+            <option value="apple"></option>
+            <option value="orange"></option>
+            <option value="cell phone"></option>
+            <option value="book"></option>
+            <option value="remote"></option>
+            <option value="scissors"></option>
+          </datalist>
           <button id="setTargetBtn" class="secondary">Update Target</button>
           <button id="ttsBtn" class="secondary">Voice: ON</button>
           <span id="status" class="status">Status: Not connected</span>

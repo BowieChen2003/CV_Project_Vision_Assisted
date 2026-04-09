@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="360" viewBox="0 0 960 360">
+  <defs>
+    <style>
+      .title { font: 700 24px Arial, sans-serif; fill: #0f172a; }
+      .label { font: 700 16px Arial, sans-serif; fill: #0f172a; }
+      .sub { font: 13px Arial, sans-serif; fill: #334155; }
+      .conv { fill: #e0f2fe; stroke: #0284c7; stroke-width: 2; rx: 14; ry: 14; }
+      .pool { fill: #ede9fe; stroke: #7c3aed; stroke-width: 2; rx: 14; ry: 14; }
+      .merge { fill: #dcfce7; stroke: #16a34a; stroke-width: 2; rx: 14; ry: 14; }
+      .arrow { stroke: #475569; stroke-width: 3; fill: none; marker-end: url(#m); }
+    </style>
+    <marker id="m" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#475569"/>
+    </marker>
+  </defs>
+
+  <text x="40" y="38" class="title">SPPF Module Structure</text>
+
+  <rect x="40" y="140" width="120" height="80" class="conv"/>
+  <text x="100" y="173" text-anchor="middle" class="label">Input</text>
+  <text x="100" y="194" text-anchor="middle" class="sub">Feature map</text>
+
+  <rect x="210" y="140" width="120" height="80" class="conv"/>
+  <text x="270" y="173" text-anchor="middle" class="label">Conv</text>
+  <text x="270" y="194" text-anchor="middle" class="sub">Compression</text>
+
+  <rect x="400" y="40" width="130" height="70" class="pool"/>
+  <text x="465" y="70" text-anchor="middle" class="label">Identity</text>
+  <text x="465" y="90" text-anchor="middle" class="sub">Original branch</text>
+
+  <rect x="400" y="120" width="130" height="70" class="pool"/>
+  <text x="465" y="150" text-anchor="middle" class="label">MaxPool 1</text>
+  <text x="465" y="170" text-anchor="middle" class="sub">kernel 5</text>
+
+  <rect x="400" y="200" width="130" height="70" class="pool"/>
+  <text x="465" y="230" text-anchor="middle" class="label">MaxPool 2</text>
+  <text x="465" y="250" text-anchor="middle" class="sub">kernel 5</text>
+
+  <rect x="400" y="280" width="130" height="70" class="pool"/>
+  <text x="465" y="310" text-anchor="middle" class="label">MaxPool 3</text>
+  <text x="465" y="330" text-anchor="middle" class="sub">kernel 5</text>
+
+  <rect x="620" y="120" width="140" height="120" class="merge"/>
+  <text x="690" y="158" text-anchor="middle" class="label">Concat</text>
+  <text x="690" y="180" text-anchor="middle" class="sub">Multi-scale context</text>
+  <text x="690" y="202" text-anchor="middle" class="sub">aggregation</text>
+
+  <rect x="820" y="140" width="120" height="80" class="conv"/>
+  <text x="880" y="173" text-anchor="middle" class="label">Conv</text>
+  <text x="880" y="194" text-anchor="middle" class="sub">Output feature</text>
+
+  <path d="M160 180 L210 180" class="arrow"/>
+  <path d="M330 180 L400 75" class="arrow"/>
+  <path d="M330 180 L400 155" class="arrow"/>
+  <path d="M330 180 L400 235" class="arrow"/>
+  <path d="M330 180 L400 315" class="arrow"/>
+  <path d="M530 75 L620 135" class="arrow"/>
+  <path d="M530 155 L620 165" class="arrow"/>
+  <path d="M530 235 L620 195" class="arrow"/>
+  <path d="M530 315 L620 225" class="arrow"/>
+  <path d="M760 180 L820 180" class="arrow"/>
+</svg>

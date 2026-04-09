@@ -19,3 +19,10 @@ venv.bak/
 # Models
 *.pt
 *.task
+
+# Presentation files
+*.ppt
+*.pptx
+
+# Local docs
+docs/Git & GitHub 代码管理全指南.md

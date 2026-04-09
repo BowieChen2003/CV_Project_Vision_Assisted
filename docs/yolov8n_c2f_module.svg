@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="360" viewBox="0 0 920 360">
+  <defs>
+    <style>
+      .title { font: 700 24px Arial, sans-serif; fill: #0f172a; }
+      .label { font: 700 16px Arial, sans-serif; fill: #0f172a; }
+      .sub { font: 13px Arial, sans-serif; fill: #334155; }
+      .main { fill: #ede9fe; stroke: #7c3aed; stroke-width: 2; rx: 14; ry: 14; }
+      .branch { fill: #e0f2fe; stroke: #0284c7; stroke-width: 2; rx: 14; ry: 14; }
+      .merge { fill: #dcfce7; stroke: #16a34a; stroke-width: 2; rx: 14; ry: 14; }
+      .arrow { stroke: #475569; stroke-width: 3; fill: none; marker-end: url(#m); }
+    </style>
+    <marker id="m" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#475569"/>
+    </marker>
+  </defs>
+
+  <text x="40" y="38" class="title">C2f Module Structure</text>
+
+  <rect x="40" y="140" width="120" height="80" class="branch"/>
+  <text x="100" y="173" text-anchor="middle" class="label">Input</text>
+  <text x="100" y="194" text-anchor="middle" class="sub">Feature map</text>
+
+  <rect x="210" y="140" width="140" height="80" class="main"/>
+  <text x="280" y="173" text-anchor="middle" class="label">1x1 Conv</text>
+  <text x="280" y="194" text-anchor="middle" class="sub">Channel adjustment</text>
+
+  <rect x="410" y="60" width="140" height="80" class="branch"/>
+  <text x="480" y="93" text-anchor="middle" class="label">Shortcut</text>
+  <text x="480" y="114" text-anchor="middle" class="sub">Feature branch</text>
+
+  <rect x="410" y="180" width="140" height="80" class="main"/>
+  <text x="480" y="213" text-anchor="middle" class="label">Bottleneck 1</text>
+  <text x="480" y="234" text-anchor="middle" class="sub">Local refinement</text>
+
+  <rect x="610" y="180" width="140" height="80" class="main"/>
+  <text x="680" y="213" text-anchor="middle" class="label">Bottleneck 2</text>
+  <text x="680" y="234" text-anchor="middle" class="sub">Deeper feature mix</text>
+
+  <rect x="780" y="120" width="110" height="120" class="merge"/>
+  <text x="835" y="160" text-anchor="middle" class="label">Concat</text>
+  <text x="835" y="184" text-anchor="middle" class="sub">and Conv</text>
+  <text x="835" y="206" text-anchor="middle" class="sub">fusion</text>
+
+  <path d="M160 180 L210 180" class="arrow"/>
+  <path d="M350 180 L410 100" class="arrow"/>
+  <path d="M350 180 L410 220" class="arrow"/>
+  <path d="M550 220 L610 220" class="arrow"/>
+  <path d="M550 100 L780 150" class="arrow"/>
+  <path d="M750 220 L780 210" class="arrow"/>
+  <path d="M890 180 L920 180" class="arrow"/>
+
+  <text x="910" y="173" text-anchor="end" class="label">Output Feature</text>
+  <text x="910" y="194" text-anchor="end" class="sub">Feature reuse + gradient flow</text>
+</svg>

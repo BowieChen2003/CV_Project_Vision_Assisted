@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="360" viewBox="0 0 980 360">
+  <defs>
+    <style>
+      .title { font: 700 24px Arial, sans-serif; fill: #0f172a; }
+      .label { font: 700 16px Arial, sans-serif; fill: #0f172a; }
+      .sub { font: 13px Arial, sans-serif; fill: #334155; }
+      .box { fill: #e0f2fe; stroke: #0284c7; stroke-width: 2; rx: 14; ry: 14; }
+      .box2 { fill: #ede9fe; stroke: #7c3aed; stroke-width: 2; rx: 14; ry: 14; }
+      .box3 { fill: #dcfce7; stroke: #16a34a; stroke-width: 2; rx: 14; ry: 14; }
+      .arrow { stroke: #475569; stroke-width: 3; fill: none; marker-end: url(#m); }
+    </style>
+    <marker id="m" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#475569"/>
+    </marker>
+  </defs>
+
+  <text x="40" y="38" class="title">YOLOv8n Backbone Overview</text>
+
+  <rect x="40" y="110" width="130" height="90" class="box"/>
+  <text x="105" y="142" text-anchor="middle" class="label">Input Image</text>
+  <text x="105" y="168" text-anchor="middle" class="sub">640 x 640 x 3</text>
+
+  <rect x="210" y="110" width="140" height="90" class="box"/>
+  <text x="280" y="142" text-anchor="middle" class="label">Conv Stem</text>
+  <text x="280" y="168" text-anchor="middle" class="sub">Edge and texture</text>
+  <text x="280" y="186" text-anchor="middle" class="sub">feature extraction</text>
+
+  <rect x="390" y="110" width="140" height="90" class="box2"/>
+  <text x="460" y="142" text-anchor="middle" class="label">C2f Stage 1</text>
+  <text x="460" y="168" text-anchor="middle" class="sub">Shallow features</text>
+
+  <rect x="570" y="110" width="140" height="90" class="box2"/>
+  <text x="640" y="142" text-anchor="middle" class="label">C2f Stage 2</text>
+  <text x="640" y="168" text-anchor="middle" class="sub">Mid-level features</text>
+
+  <rect x="750" y="110" width="140" height="90" class="box2"/>
+  <text x="820" y="142" text-anchor="middle" class="label">C2f Stage 3</text>
+  <text x="820" y="168" text-anchor="middle" class="sub">Deep semantics</text>
+
+  <rect x="390" y="240" width="140" height="80" class="box3"/>
+  <text x="460" y="272" text-anchor="middle" class="label">SPPF</text>
+  <text x="460" y="294" text-anchor="middle" class="sub">Larger receptive</text>
+  <text x="460" y="312" text-anchor="middle" class="sub">field aggregation</text>
+
+  <rect x="570" y="240" width="320" height="80" class="box3"/>
+  <text x="730" y="272" text-anchor="middle" class="label">Multi-scale Outputs</text>
+  <text x="730" y="294" text-anchor="middle" class="sub">P3 high resolution  |  P4 medium resolution  |  P5 low resolution</text>
+
+  <path d="M170 155 L210 155" class="arrow"/>
+  <path d="M350 155 L390 155" class="arrow"/>
+  <path d="M530 155 L570 155" class="arrow"/>
+  <path d="M710 155 L750 155" class="arrow"/>
+  <path d="M820 200 L820 225 L530 225 L530 260" class="arrow"/>
+  <path d="M530 280 L570 280" class="arrow"/>
+
+  <text x="640" y="88" text-anchor="middle" class="sub">Spatial resolution decreases while semantic abstraction increases</text>
+</svg>
